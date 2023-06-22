@@ -1,0 +1,317 @@
+
+{% extends "Dashboard.html" %}
+{% block title %}Clinic & Doctors {% endblock %}
+{% include 'messages.html' %}
+{% block content %}
+{% load static %}
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta charset="UTF-8">
+
+<script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"
+/>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Lato", sans-serif;
+}
+a { text-decoration: none; }
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  text-align: center;
+  background-color: #f1f1f1;
+}
+
+div-clinic {
+  height: 200px;
+  margin: 20px;
+  border: 5px solid;
+  background-color: #FBD603;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+  width : 50%
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+</style>
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+    {% include 'error_message.html' %} 
+ 
+ 
+     <p id="para" style="display: none;">{{dictdata}}</p>
+     <p id="dise" style="display: none;">{{special}}</p>
+
+
+     <div id="autocomplete" class="autocomplete" style="width:50%">
+      <input class="autocomplete-input" />
+      <ul class="autocomplete-result-list"></ul>
+    </div>
+  
+      <select name="country" id="id_country"></select>
+      <br><br>
+      <select name="state" id="id_state"></select>
+      <br><br>
+      <select name="city" id="id_city"></select>
+      <br><br>
+      <select name="specialzation" id="id_specialzation"></select>
+      <br><br>
+
+
+    <div class="tab" >
+        <button class="tablinks active" onclick="openCity(event, 'clinic')">Clinics</button>
+        <button class="tablinks" onclick="openCity(event, 'doctor')">Doctors</button>
+        
+    </div>
+      
+
+
+      <div id="clinic" class="tabcontent" style="display:block">
+        {% for i in clinics %}
+            {% include 'clinic_header.html' with clinic=i %} 
+        {% endfor %} 
+       
+       
+      </div>
+      
+      <div id="doctor" class="tabcontent">
+        {% for i in doctors %}
+            {% include 'doctor_header.html' with doctor=i %} 
+        {% endfor %}
+      </div>
+      
+   
+      
+
+
+
+      <script>
+
+      function openCity(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+      }
+
+      </script>
+         
+   
+      <script >
+        var subjectObject =  JSON.parse(document.getElementById("para").innerHTML);
+        var specialzations= JSON.parse(document.getElementById("dise").innerHTML);
+
+       
+
+        
+
+        window.onload = function() {
+          var subjectSel = document.getElementById("id_country");
+          var topicSel = document.getElementById("id_state");
+          var chapterSel = document.getElementById("id_city");
+          var speci=document.getElementById("id_specialzation");
+
+
+          for(var x in specialzations){
+            speci.options[speci.options.length]=new Option(x,x);
+          }
+          
+
+          for (var x in subjectObject) {
+            subjectSel.options[subjectSel.options.length] = new Option(x, x);
+          }
+
+          for (var y in subjectObject[document.getElementById("id_country").options[0].text]) {
+              topicSel.options[topicSel.options.length] = new Option(y, y);
+            }
+
+            var z=subjectObject[subjectSel.value][document.getElementById("id_state").options[0].text]
+          for (var i = 0; i < z.length; i++) {
+              chapterSel.options[chapterSel.options.length] = new Option(z[i], z[i]);
+            }
+
+            console.log(getclinicanddoctors());
+
+            speci.onchange=function(){
+              console.log(getclinicanddoctors());
+            }
+
+          subjectSel.onchange = function() {
+            
+            chapterSel.length = 0;
+            topicSel.length = 0;
+            
+            for (var y in subjectObject[this.value]) {
+              topicSel.options[topicSel.options.length] = new Option(y, y);
+
+             
+            }
+            var z=subjectObject[subjectSel.value][document.getElementById("id_state").options[0].text]
+            for (var i = 0; i < z.length; i++) {
+              chapterSel.options[chapterSel.options.length] = new Option(z[i], z[i]);
+            }
+
+            console.log(getclinicanddoctors());
+          }
+          topicSel.onchange = function() {
+
+            chapterSel.length = 0;
+           
+            var z = subjectObject[subjectSel.value][this.value];
+            for (var i = 0; i < z.length; i++) {
+              chapterSel.options[chapterSel.options.length] = new Option(z[i], z[i]);
+            }
+
+            console.log(getclinicanddoctors());
+          }
+
+          chapterSel.onchange=function(){
+            console.log(getclinicanddoctors());
+          }
+        }
+
+  function getclinicanddoctors() {
+    $.ajax({
+      url: "getall/?country="+document.getElementById("id_country").value+"&state="+document.getElementById('id_state').value+"&city="+document.getElementById("id_city").value+"&spec="+document.getElementById("id_specialzation").value+"",
+      type: "GET", 
+      success: function(result){
+
+        var colors = [ 'grey',  'lightgrey'];
+        console.log(result);
+        var json=JSON.parse(result);
+
+        var clinics=json.clinics;
+        var doctors=json.doctors;
+
+        // Clinic tab data setting
+        $("#clinic").empty();
+        
+        for(var i = 0; i < clinics.length; i++) {
+          var obj = clinics[i];
+          var id=obj.clinicId
+          var temp="<br><div onclick=window.location.href='/clinic/clinicdetails/"+id+"' id="+id+" style=background-color:"+colors[i%2]+"; '><p>"+obj.clinicName+"</p>";
+          
+          for (var j=0;j<doctors.length;j++){
+            var doc=doctors[j]
+            if (doc.clinicId==obj.clinicId){
+              temp=temp+"<br><p>"+doc.doctorName+" -- "+doc.specialization+"</p>";
+              
+            }
+          }
+          $("#clinic").append(temp+"</div>");
+      }
+
+
+        //  doctor tab data setting
+        $("#doctor").empty();
+        for(var i = 0; i < doctors.length; i++) {
+          var obj = doctors[i];
+          var temp="<br><div onclick=window.location.href='/clinic/doctordetails/"+obj.doctorId+"' style=background-color:"+colors[i%2]+";><p>"+obj.doctorName+"</p>";
+           // <a href='/clinic/doctordetails/"+obj.doctorId+"'>
+          
+          $("#doctor").append(temp+"</div>");
+        }
+      },
+      error: function(error){
+        console.log(`Error ${error}`);
+      }
+    })
+  }
+
+
+  function clinicDirect(){
+
+
+
+  }
+  
+  </script>
+  
+  <script>
+
+    new Autocomplete('#autocomplete', {
+
+      search : input =>{
+        console.log(input)
+        const url=`searchclinics/?clinicname=${input}`
+        return new Promise(resolve =>{
+          fetch(url)
+          .then(response => response.json())
+          .then(data =>{
+            console.log(data)
+            resolve(data.data)
+          })
+
+        })
+      },
+      onSubmit: result=> {
+       
+        const url=`getsearchedclinic/?clinicname=${result}`
+       
+          fetch(url)
+          .then(response => response.json())
+          .then(data =>{
+            console.log(data)
+            if(data.isDoctor){
+              window.open(`/clinic/doctordetails/`+data.data,name="_parent")
+            }
+            else{
+              window.open(`/clinic/clinicdetails/`+data.data,name="_parent")
+            }
+           
+          })
+      }, 
+      autoSelect: true
+    })
+
+   
+
+  </script>
+  
+
+
+
+{% endblock %}

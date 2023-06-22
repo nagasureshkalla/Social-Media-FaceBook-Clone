@@ -1,0 +1,5 @@
+"clinicId";"clinicName";"country";"state";"city";"specialization";"availability";"clinicImage";"createdDate";"updatedDate";"rating"
+1;"First Clinic";"INDIA";"AP";"Tyajampudi";"Teeth, skin,Heart Attack";"24/7";"usersprofiles/images.jpeg";"2022-05-15 22:12:01.310087";"2022-05-15 22:12:01.310087";4.5
+2;"Second Clinic";"INDIA";"AP";"Tyajampudi";"Teeth, skin,Heart Attack";"24/7";"usersprofiles/images.jpeg";"2022-05-15 22:12:01.310087";"2022-05-15 22:12:01.310087";5.0
+3;"Third Clinic";"INDIA";"AP";"Tyajampudi";"Teeth, skin,Heart Attack";"24/7";"usersprofiles/images.jpeg";"2022-05-15 22:12:01.310087";"2022-05-15 22:12:01.310087";4.0
+4;"Fourth Clinic";"INDIA";"AP";"Tyajampudi";"Teeth, skin,Heart Attack";"24/7";"usersprofiles/images.jpeg";"2022-05-15 22:12:01.310087";"2022-05-15 22:12:01.310087";5.0

@@ -1,0 +1,134 @@
+
+
+{% block content %}
+{% load static %}
+
+
+
+    <div width='500px' height="350px">
+
+    
+        {% if "DoctorAppointment" not in postId %}
+            <div id="likesdis{{postId}}" > </div>
+        {% endif %}
+
+        <br>
+        
+        <div id="display{{postId}}"></div>
+      
+        
+
+        <form method = "post" id="chatform{{postId}}" enctype="multipart/form-data" class="chatform{{postId}}" >
+            {% csrf_token %}
+            {% comment %} <input name='postId' type='hidden' value={{postId}} id='id_postId'> {% endcomment %}
+            {% comment %} {{chatform.as_p}} {% endcomment %}
+            <input type='text' id='chatmessage{{postId}}'  minlength='2' placeholder="chat here" required>
+            <input type='submit' value="Send" name='postchatmessage' id="submitchatmessage" >
+        </form>
+    </div>
+
+
+    <!-- GEt chat message of Post -->
+  
+    <script>
+        $(document).ready(function(){
+        
+        setInterval(function(){
+            $.ajax({
+                type: 'GET',
+                url : "/post/getchatmessages/{{postId}}",
+                success: function(response){
+                    console.log(response);
+                    $("#display{{postId}}").empty();
+                    for (var key in response.messages) 
+                    {
+                        var temp="<br><b>"+response.messages[key].chatMessage+"</b><p>"+response.messages[key].authorname+"</p><input type='datetime-local' value="+response.messages[key].updatedDate+" readonly><img src=/static/"+response.messages[key].authorphotourl +" width='70px' height='70px'>";
+                        $("#display{{postId}}").append(temp);
+                    } 
+
+                   
+
+                    $("#likesdis{{postId}}").empty();
+                    
+                    var temp="<br><div><button id='likes{{postId}}' class='like_button' >Likes "+response.likedislikes.likes+"</button><button id='dislikes{{postId}}' class='dislike_button'> Dislikes "+response.likedislikes.dislikes +"</button><div>";
+                    $("#likesdis{{postId}}").append(temp);
+                    
+                },
+                error: function(response){
+                    {% comment %} alert('An error occured')   {% endcomment %}
+                }
+            });
+        },1000);
+        })
+    </script> 
+
+    <!-- Submit Chat message -->
+    <script>
+        var frm = $('#chatform{{postId}}');
+   
+        frm.submit(function () {
+            var testvalue = $("#chatmessage{{postId}}").val();
+            $.ajax({
+                type: "POST",
+                url: "/post/postchatmessage/{{postId}}",
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}','message':testvalue },
+                success: function (data) {
+                    {% comment %} alert('Chat message posted')   {% endcomment %}
+                    $('#chatmessage{{postId}}').val('')
+                },
+                error: function(data) {
+                    {% comment %} alert('Error at chat message',data)   {% endcomment %}
+                }
+              
+            });
+            return false;
+        });
+    </script>
+
+
+          <!--Like a Post-->
+    <script>
+        $('#likesdis{{postId}}').on('click', '.like_button', function(){
+            
+
+            $.ajax({
+                type:'get',
+                url:"/post/postlikes/{{postId}}/{{authorId}}/1",
+                cache:false,
+                
+                success: function(response) {
+                  {% comment %} alert('Liked Paost')  {% endcomment %}
+                },
+                error: function(request, status, error) {
+                  {% comment %} alert('An error occured at Liked Post')  {% endcomment %}
+                }
+             });
+        
+        });
+
+    </script>
+
+    <!--DisLike a Post-->
+    <script>
+        $('#likesdis{{postId}}').on('click', '.dislike_button', function(){
+            
+
+            $.ajax({
+                type:'get',
+                url:"/post/postlikes/{{postId}}/{{authorId}}/0",
+                cache:false,
+                
+                success: function(response) {
+                  {% comment %} alert('DisLiked Paost')  {% endcomment %}
+                },
+                error: function(request, status, error) {
+                  {% comment %} alert('An error occured at DisLiked Post')  {% endcomment %}
+                }
+             });
+        
+        });
+
+    </script>
+
+{% endblock %}
+

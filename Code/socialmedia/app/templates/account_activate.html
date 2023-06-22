@@ -1,0 +1,26 @@
+{% autoescape off %}
+
+
+Hello My friend
+
+Please use the link below to verify your account
+
+<br>
+<br>
+<a  style="display: inline-block;
+border-radius: 4px;
+background-color: #f4511e;
+border: none;
+color: #FFFFFF;
+text-align: center;
+font-size: 28px;
+padding: 20px;
+width: 200px;
+transition: all 0.5s;
+cursor: pointer;
+margin: 5px;" width="300px", height="100px" href="http://{{domain}}{% url 'accountactivate' uid64=uid token=token %}">Activate Account</a>
+
+
+
+
+{% endautoescape %}

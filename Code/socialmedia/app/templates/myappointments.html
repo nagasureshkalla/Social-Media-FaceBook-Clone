@@ -1,0 +1,221 @@
+
+{% extends "Dashboard.html" %}
+{% block title %} My Appointments {% endblock %}
+
+{% block content %}
+{% load static %}
+
+{% include 'messages.html' %}
+  
+
+<style>
+    .content {
+        padding: 0 18px;
+        display: block;
+        overflow: hidden;
+        
+      }
+    .collapsible {
+        background-color: #0000FF;
+        color: white;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+      }
+
+    * {
+      box-sizing: border-box;
+    }
+    
+    /* Create two equal columns that floats next to each other */
+    .column {
+      float: left;
+      padding: 0px;
+
+    }
+    
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    </style>
+
+
+
+<h3>My Appointments</h3>
+
+<div class="row" style="padding:20px">
+
+    <button type="button" class="collapsible">Upcoming Appointments ({{upcomingtotal}})</button>
+    <div class="column" class="content" style="width:100%;">  
+    {% for i in upcomingappointments %}
+        
+                    <div  style="background-color:grey;padding:10px,10px,10px,10px;">
+                        <p>Date: {{i.dateofslot}}</p>
+                            <p>Doctor Name : {{i.doctorName}}</p>
+                            <p>Diseases Category : {{i.specialization}}</p>
+                            <p>Time: {{i.slotTime}}</p>
+                            {% if i.paymentStatus %}
+                                <p>Payment Status : Paid</p>
+                            {% else %}
+                                <p>Payment Status : Pending</p>
+                            {% endif %}
+                            <p>Coupon : {{i.coupunused}}</p>
+                            <p>Fee: {{i.amount}}</p>
+                            <p>Payment Mode : {{i.paymentmode}}</p>
+                            {% if i.rating > 0  %}
+                                <p>Rating : {{i.rating}}</p>
+                            {% else %}
+                                {% if i.appointmentstatus is 1 %}
+                                        <div id="{{i.doctorbookingid}}" onclick='submitRating({{i.doctorbookingid}})'>
+                                        {% include 'Star.html' with doctorbookingid=i.doctorbookingid date=i.dateofslot time=i.slotTime %}
+                                        </div>
+                                    {% endif %}
+                            {% endif %}
+                            {% if i.appointmentstatus is not -1 %}
+                                {% if i.dateofslot|date:"Y-m-d" > todaydate %}
+                                <button type='submit' id="Cancel{{i.doctorbookingid}}" onclick='cancelAppointment({{i.doctorbookingid}})'>Cancel Appointment</button>
+                                {% endif %}
+                                <button type='submit' id="Viewdetails{{i.doctorbookingid}}" onclick="window.location.href = '/myappointments/doctorappointmentviewdetails/{{i.doctorbookingid}}'"> View Chat/Prescriptions</button>
+                            {% else %}
+                                <p>Appointment : Cancelled</p>
+                            {% endif %}
+                            
+                    </div>
+                
+        <script>
+            function submitRating(id) {
+                
+                $(':radio').change(function(){
+                    console.log('New star rating: for '+id+' of {{i.rating}} : ' + this.value);
+                    
+
+                    $.ajax({
+                        type: 'GET',
+                        url : "rating/?bookingid="+id+"&rating="+this.value,
+                        success: function(response){
+                            if(response.data){
+                                document.getElementById(id).hidden=true;
+                            }
+                            
+                            
+                        },
+                        error: function(response){
+                            {% comment %} alert('An error occured')  {% endcomment %}
+                        }
+                    });
+
+                    
+                });
+            }
+            function cancelAppointment(bookingid){
+                $.ajax({
+                    type: 'GET',
+                    url : "cancelappointment/?bookingid="+bookingid,
+                    success: function(response){
+                        if(response.data){
+                            document.getElementById("Cancel"+bookingid).hidden=true;
+                            document.getElementById("Viewdetails"+bookingid).hidden=true;
+                            alert('Appointment Canceled Successfully  Refund will happen with in 48 hours')
+                        }
+                        
+                        
+                    },
+                    error: function(response){
+                        {% comment %} alert('An error occured')  {% endcomment %}
+                    }
+                });
+            }
+            
+           </script> 
+    {% endfor %}
+    </div>
+
+    <button type="button" class="collapsible">Past Appointments ({{pasttotal}})</button>
+    <div class="column" class="content" style="width:100%;">  
+    {% for i in pastappointments %}
+        
+                    <div  style="background-color:grey;padding:10px,10px,10px,10px;">
+                        <p>Date: {{i.dateofslot}}</p>
+                            <p>Doctor Name : {{i.doctorName}}</p>
+                            <p>Diseases Category : {{i.specialization}}</p>
+                            <p>Time: {{i.slotTime}}</p>
+                            {% if i.paymentStatus %}
+                                <p>Payment Status : Paid</p>
+                            {% else %}
+                                <p>Payment Status : Pending</p>
+                            {% endif %}
+                            <p>Coupon : {{i.coupunused}}</p>
+                            <p>Fee: {{i.amount}}</p>
+                            <p>Payment Mode : {{i.paymentmode}}</p>
+                            {% if i.rating > 0  %}
+                                <p>Rating : {{i.rating}}</p>
+                            {% else %}
+                                {% if i.appointmentstatus is 1 %}
+                                        <div id="{{i.doctorbookingid}}" onclick='submitRating({{i.doctorbookingid}})'>
+                                        {% include 'Star.html' with doctorbookingid=i.doctorbookingid date=i.dateofslot time=i.slotTime %}
+                                        </div>
+                                    {% endif %}
+                                
+                            {% endif %}
+
+                            {% if i.appointmentstatus is not -1 %}
+                                
+                            <button type='submit' onclick="window.location.href = '/myappointments/doctorappointmentviewdetails/{{i.doctorbookingid}}'"> View Chat/Prescriptions</button>
+                            {% else %}
+                                <p>Appointment : Cancelled</p>
+                            {% endif %}
+                    </div>
+                
+        <script>
+            function submitRating(id) {
+                
+                $(':radio').change(function(){
+                    console.log('New star rating: for '+id+' of {{i.rating}} : ' + this.value);
+
+                    $.ajax({
+                        type: 'GET',
+                        url : "rating/?bookingid="+id+"&rating="+this.value,
+                        success: function(response){
+                            
+                            if(response.data){
+                                document.getElementById(id).hidden=true;
+                            }
+                            
+                        },
+                        error: function(response){
+                            {% comment %} alert('An error occured')  {% endcomment %}
+                        }
+                    });
+
+                });
+            }
+           </script> 
+    {% endfor %}
+    </div>
+
+</div>
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+    
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+      });
+    }
+    </script>
+{% endblock %}

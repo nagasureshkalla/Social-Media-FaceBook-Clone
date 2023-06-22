@@ -1,0 +1,128 @@
+
+{% extends "Dashboard.html" %}
+{% block title %}Doctor Appointment {% endblock %}
+{% block content %}
+{% load static %}
+
+<style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    /* Create two equal columns that floats next to each other */
+    .column {
+      float: left;
+      padding: 10px;
+
+    }
+    
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    </style>
+   
+    {% include 'messages.html' %}
+
+   
+
+    <div class="row" style="padding:20px">
+        <div class="column"  style="background-color:#aaa;width:70%;">
+            <p>{{user}}</p>
+            <p>{{doctor}}</p>
+            <p>{{user.username}}
+        </div>
+        <div class="column" style="background-color:#bbb;width:30%">
+         
+            <p id="dise" style="display: none;">{{timeslots}}</p>
+            <p id="specii" style="display: none;">{{specilization}}</p>
+    
+            <p>Doctor Name:: {{doctor.doctorName}}
+    
+            <form method = "post" enctype="multipart/form-data" >
+                {% csrf_token %}
+                {{form.as_p}}
+                <p id="amount"></p>
+                <input type="reset" value="Reset">
+                <input type = "submit"  name="submitslotbookdetails" value="Book Slot" >
+            </form>
+
+        </div>
+      </div>
+    
+    
+      
+
+    <script >
+        
+        window.onload = function() {
+            var specilization=JSON.parse(document.getElementById("specii").innerHTML);
+
+            var spec= document.getElementById("id_specialization");
+
+            for(var i in specilization){
+                spec.options[spec.options.length]=new Option(specilization[i],specilization[i]);
+              } 
+
+            var dateselect=document.getElementById("id_dateofslot");
+            myFunction();
+            dateselect.onchange=function(){
+                myFunction();
+            }
+
+            spec.onchange=function(){
+                myFunction();
+            }
+        }
+        
+
+        function myFunction() {
+                var dise_dropdown= document.getElementById("id_timeofslot");
+                
+                var date=document.getElementById('id_dateofslot').value
+                {% comment %} console.log(date) {% endcomment %}
+                var dis=document.getElementById("dise").innerHTML
+                
+                $.ajax({
+                    type:'get',
+                    url:"/clinic/doctordetails/getavailableslotsofday/?dateofslot="+date+"&doctorId="+{{doctor.doctorId}}+"&starttime={{starttime}}&endtime={{endtime}}&specilization="+document.getElementById("id_specialization").value+"",
+                    cache:false,
+                    
+                    success: function(response) {
+
+                      document.getElementById("id_timeofslot").innerHTML =null;
+                      
+
+                      var list_of_times=JSON.parse(response.data);
+                      
+                      var amount=JSON.parse(response.amount)
+
+                      {% comment %} console.log(list_of_times) {% endcomment %}
+
+                      for(var x in list_of_times){
+                        dise_dropdown.options[dise_dropdown.options.length]=new Option(list_of_times[x],list_of_times[x]);
+                      }
+
+                      
+                      
+                      document.getElementById("amount").innerHTML="Amount : "+amount
+
+                      document.getElementById("id_amount_input").value=amount
+
+                    },
+                    error: function(request, status, error) {
+                      {% comment %} alert('An error occured at Liked Post')  {% endcomment %}
+                    }
+                 });
+          }
+
+    </script>
+
+
+
+  
+
+
+{% endblock %}

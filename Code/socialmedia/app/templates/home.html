@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+    {% if messages %}
+        {% for msg in messages %}
+        <div class="alert alert-{{msg.level_tag}} " role="alert">
+            {{msg.message}}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+
+<h1>Hello World!</h1>
+<p>Welcome to my first Django project!</p>
+
+<form  method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    Select image to upload:
+    <input type="file" name="profile" id="fileToUpload">
+    <input type="submit"  name="submit">
+  </form>
+  
+  <img src="https://www.w3schools.com/images/lamp.jpg" alt="Lamp" width="320" height="320">
+
+    <img src="images_3fMIQcm.jpeg" width="20%"  alt="..."/>
+</body>
+</html>

@@ -1,0 +1,2 @@
+"doctorId";"doctorName";"country";"state";"city";"specialization";"availabilityFrom";"doctorImage";"createdDate";"updatedDate";"clinicId_id";"experience";"rating";"availabilityTo"
+1;"First Doctor Name";"INDIA";"AP";"Tyajampudi";"Heart Attack,Skin";"06:00";"usersprofiles/images.jpeg";"2022-05-15 22:12:01.310087";"2022-05-15 22:12:01.310087";1;2;4.5;"19:00"

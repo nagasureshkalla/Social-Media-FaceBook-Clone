@@ -1,0 +1,47 @@
+{% include 'messages.html' %}
+{% block title %}Post Details{% endblock %}
+{% block content %}
+{% load static %}
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+
+<div style="border: double;padding: 5px 20px 50px;max-width: 60%;margin:20px"  >
+            
+          
+    <div onclick="window.location.href = '/post/postdetails/{{i.postId}}';">
+
+        {% for j in i.posturls %}
+        <img src="{% static j %}"  alt="Images" style="overflow: hidden;" height="50px" width:"50px">
+        
+        {% endfor %}
+
+        <p>Message: {{i.message}}</p>
+        <p>AuthorId: {{i.authorId}}</p>
+        <p>Author: {{i.author}}</p>
+        <p>Post Age: {{i.postage}}</p>
+        Author Photo<img src="{% static i.authorphoto %}"  alt="Images" style="overflow: hidden;" height="50px" width:"50px">
+
+        
+    </div>
+   
+    {% include 'sharesocialmedia.html' with postId=i.postId domain=domain %} 
+    
+   
+
+    <br>
+        <!--<button type="button" class="collapsible" name="showmessages" >Comments</button>
+        <div style="display: none;">-->
+
+            
+            
+     {% include 'chat.html' with postId=i.postId authorId=i.authorId %} 
+
+</div>
+   
+
+{% endblock %}
+
+
+

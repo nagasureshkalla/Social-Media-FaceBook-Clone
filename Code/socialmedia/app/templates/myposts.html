@@ -1,0 +1,93 @@
+{% extends "Dashboard.html" %}
+{% block title %} My Posts{% endblock %}
+{% include 'messages.html' %}
+{% block content %}
+{% load static %}
+
+<meta charset="UTF-8">
+
+<script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"
+/>
+
+
+    <h3>My Posts </h3>
+
+    <div id="autocomplete" class="autocomplete" style="width:50%">
+        <input class="autocomplete-input" />
+        <ul class="autocomplete-result-list"></ul>
+      </div>
+
+      <br><br>
+
+
+    {% for i in posts %}
+    
+        <div style="background-color:grey;padding:10px 10px">
+            <h4>{{i.message}}</h4>   
+            {% if i.isActive is 1 %}
+                <p>Active</p>
+            {% elif i.isActive == -1 %}
+                <p>Rejected: {{i.reason}}</p>
+            {% else %}
+                <p>UnderReview<p>
+            {% endif %}
+            <div>
+                
+            
+
+                {% for image in i.posturls %}
+                    
+                    <img src="{% static image %}"  alt="Images" style="overflow: hidden;" height="50px" width:"50px">
+                {% endfor %}
+            </div>
+
+            <button  onclick="window.location.href = '/myposts/editpost/{{i.postId}}'">View/Edit</button>
+        </div>
+            <br><br><br>
+    {% endfor %}
+
+
+    <script>
+
+        new Autocomplete('#autocomplete', {
+    
+          search : input =>{
+            console.log(input)
+            const url=`searchmyposts/?postmessage=${input}`
+            return new Promise(resolve =>{
+              fetch(url)
+              .then(response => response.json())
+              .then(data =>{
+                console.log(data)
+                resolve(data.data)
+              })
+    
+            })
+          },
+          onSubmit: result=> {
+           
+            const url=`getsearchedmyposts/?postmessage=${result}`
+           
+              fetch(url)
+              .then(response => response.json())
+              .then(data =>{
+                console.log(data)
+                
+                
+                window.open(`/myposts/editpost/`+data.data,name="_parent")
+                
+               
+              })
+          }, 
+          autoSelect: true
+        })
+    
+       
+    
+      </script>
+      
+
+{% endblock %}

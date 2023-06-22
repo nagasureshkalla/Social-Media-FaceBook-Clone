@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+   
+
+<body>
+
+    {% include 'messages.html' %}
+
+
+
+    <form method = "post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type = "submit" name="signup" value="Signup" >
+
+    </form>
+
+
+    <form method = "post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form1.as_p}}
+        <input type = "submit" name="login" value="Login" >
+        
+    </form>
+
+    <input type="submit" value="Forgot Password" name="forgotpassword">
+
+
+
+    <form method = "post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form2.as_p}}
+        <input type="submit" value="Send Email" name="passwordreset">
+    </form>
+
+
+
+
+      
+
+</body>
+
+</html>

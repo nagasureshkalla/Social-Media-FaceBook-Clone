@@ -1,0 +1,31 @@
+
+{% extends "Dashboard.html" %}
+{% block title %}Clinic Details {% endblock %}
+{% include 'messages.html' %}
+{% block content %}
+{% load static %}
+
+
+  {% for i in clinic %}
+    
+    <img src='/static/{{i.clinicImage}}' alt="ClinicImage"/>
+    <p>Name: {{i.clinicName}}</p>
+    <p>Country: {{i.country}}</p>
+    <p>Availability: {{i.availability}}</p>
+    <p>Rating: {{rating}}</p>
+
+    <h4>Specilzations:</h4><p>{{i.specialization}}</p>
+
+    
+  {% endfor%}
+
+  <h3>Doctors</h3>
+
+  <div id="doctor" class="tabcontent" >
+    {% for i in doctors %}
+        <div onclick=window.location.href='/clinic/doctordetails/{{i.doctorId}}' style='background-color:grey'>
+        {% include 'doctor_header.html' with doctor=i %} 
+        </div>
+    {% endfor %}
+  </div>
+{% endblock %}

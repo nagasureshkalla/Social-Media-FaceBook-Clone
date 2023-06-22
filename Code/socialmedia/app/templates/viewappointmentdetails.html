@@ -1,0 +1,28 @@
+
+{% extends "Dashboard.html" %}
+{% block title %} My Appointments {% endblock %}
+
+{% block content %}
+{% load static %}
+
+{% include 'messages.html' %}
+
+
+<p>If Doctor adds any Message , Display Here : {{message}}</p>
+
+
+
+{% include 'chat.html' with postId=bookingid authorId=userId %} 
+
+
+<div style='background-color:grey;height:100px'>
+
+    <form method = "post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{documentform.as_p}}
+        <input type="hidden" id="{{bookingid}}" value={{bookingid}}>
+        <input type="submit" value="Send Documents" name="passwordreset">
+    </form>
+
+</div>
+{% endblock %}

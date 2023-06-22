@@ -1,0 +1,80 @@
+{% extends "Dashboard.html" %}
+{% block title %} Payment {% endblock %}
+{% block content %}
+{% load static %}
+
+    
+  
+<form method="POST" action="payment/paymenthandler/">
+
+    <div class="card">
+      <h1 class="title">Payment details</h1>
+      
+      <div class="btn_container">
+      
+        <p>Actual Amount  : {{actualamount}}</p>
+        <p>Coupon Amount Applied : {{couponamount}}</p>
+        <p>Total Amount  : {{finalamount}}</p>
+        
+
+      
+      </div>
+    </div>
+
+    <!-- RAZORPAY INTEGRATION HERE -->
+
+
+    <button  type="submit" id="rzp-button1">Pay</button>
+  <form>
+
+
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+    var options = {
+        "key": "{{ razorpay_merchant_key }}", // Enter the Key ID generated from the Dashboard
+        "amount": "{{razorpay_amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "{{username}}",
+        "description": "Payment for Doctor",
+        "image": "static/{{photo}}",
+        "order_id": "{{razorpay_order_id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 2
+        "handler": function (response){
+
+            {% comment %} alert(response.razorpay_payment_id);
+            alert(response.razorpay_order_id);
+            alert(response.razorpay_signature) {% endcomment %}
+        },
+        "prefill": {
+            "name": "{{username}}",
+            "email": "{{email}}",
+            "contact": ""
+        },
+        "notes": {
+            "address": "SocialMedia address"
+        },
+        "callback_url":'{{callback_url}}',
+        redirect: true,
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response){
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+    });
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+    </script>
+   
+
+
+  {% endblock %}

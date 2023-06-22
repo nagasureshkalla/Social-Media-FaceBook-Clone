@@ -1,0 +1,18 @@
+This is a Social Media Kinda Django Web Application
+
+
+python migrations---------
+
+    python manage.py makemigrations
+
+    python manage.py migrate
+
+python web application start ---------
+
+    python manage.py runserver
+
+MySQL server start needed  -----------
+    https://dev.mysql.com/downloads/mysql/
+    https://dev.mysql.com/downloads/workbench/       (optional/ tables visualization)
+
+    

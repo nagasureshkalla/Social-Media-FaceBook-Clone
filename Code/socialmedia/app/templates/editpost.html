@@ -1,0 +1,73 @@
+{% extends "Dashboard.html" %}
+{% block title %} Edit Post{% endblock %}
+{% include 'messages.html' %}
+{% block content %}
+{% comment %} {% load static %} {% endcomment %}
+
+<form method = "post" id="submiteditpostdetails" enctype="multipart/form-data" >
+    {% csrf_token %}
+
+
+    
+
+    {{editpost.as_p}}
+
+    <input id="imageurls" type='hidden' value="{{urls}}">
+
+    <div id="image_url_updated"></div>
+
+    <input type="button" value="Cancel" onclick="history.back()">
+    <input type = "submit"  name="submiteditpostdetails" value="Submit" >
+  </form>
+
+
+  <script >
+    
+
+
+    window.onload = function() {
+
+        geturlsafterdelete("")
+      
+    }
+
+
+    function geturlsafterdelete(deletedimage) {
+
+        var imageurls = document.getElementById("id_imageurls_updated").value.split(',');
+        imageurls=imageurls.filter(e =>  e);
+        console.log(imageurls)
+
+        $("#image_url_updated").empty();
+
+        var temp="<br><div>"
+
+        for (i = 0; i < imageurls.length; i++) {
+            
+            var image=""+imageurls[i]
+            var imageurl="/static"+imageurls[i]
+            console.log(imageurl)
+            if (image!="" || image!=" "){
+                if(image!=deletedimage && image!=" "){
+                    temp+="<br><img onclick=geturlsafterdelete('"+image+"') src="+imageurl+" alt='Images' style='overflow: hidden;'' height='50px' width:'50px'>";
+            
+                }
+                else{
+                    document.getElementById("id_imageurls_updated").value=document.getElementById("id_imageurls_updated").value.replace(deletedimage, "")
+                }
+            }
+           
+          } 
+          $("#image_url_updated").append(temp+"</div>");
+    }
+    
+
+
+
+
+
+
+    </script >
+      
+
+{% endblock %}

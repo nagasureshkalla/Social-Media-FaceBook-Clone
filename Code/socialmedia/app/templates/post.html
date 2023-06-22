@@ -1,0 +1,141 @@
+
+{% extends "Dashboard.html" %}
+{% block title %}Posts {% endblock %}
+{% include 'messages.html' %}
+{% block content %}
+{% load static %}
+
+    <h1>This is post page {{data}}</h1>
+    {% comment %} <p>These are the posts---{{userdetails}}</p> {% endcomment %}
+
+    {% comment %} <img height="200px" width:"200px" src="{% static 'usersprofiles/images.jpeg' %}"  alt="Image"  >
+    <img height="200px" width:"200px" src="{% static usersphoto.photo %}"  alt="Image"  > {% endcomment %}
+
+    <div id="autocomplete" class="autocomplete" style="width:50%">
+        <input class="autocomplete-input" />
+        <ul class="autocomplete-result-list"></ul>
+      </div>
+
+
+    <br><br>
+
+
+
+    <div style="border: double;padding: 5px 20px ;max-width: 60%;">
+    <form method = "post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type='submit' value="Post" name='post'>
+    </form>
+    </div>
+
+
+    {% for i in searchdata %}
+      {% include 'post_header.html' with i=i %} 
+    {% endfor %}
+
+
+    {% for i in postdata %}
+      {% include 'post_header.html' with i=i %} 
+    {% endfor %}
+
+
+    
+
+    <div>
+        <p><b>Followers</b></p>
+        {% for i in followers %}
+            <p>{{i.username}}</p>
+            {% if i.isProfileActive %}
+              <p>Active</p>
+            {% else %}
+               <p>Inactive</p>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+
+    <div>
+        <p><b>Contributers</b></p>
+        {% for i in contributers %}
+            <p>{{i.username}}</p>
+            {% if i.isProfileActive %}
+              <p>Active</p>
+            {% else %}
+              <p>Inactive</p>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+
+    
+    <div>
+        <p><b>Following</b></p>
+        {% for i in following %}
+            <p>{{i.username}}</p>
+            {% if i.isProfileActive %}
+              <p>Active</p>
+            {% else %}
+              <p>Inactive</p>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+
+
+  <script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+        content.style.display = "none";
+        } else {
+        content.style.display = "block";
+        }
+    });
+    }
+</script>
+
+<script>
+
+    new Autocomplete('#autocomplete', {
+
+      search : input =>{
+        console.log(input)
+        const url=`searchposts/?postname=${input}`
+        return new Promise(resolve =>{
+          fetch(url)
+          .then(response => response.json())
+          .then(data =>{
+            console.log(data)
+            resolve(data.data)
+          })
+
+        })
+      },
+      onSubmit: result=> {
+       
+        const url=`getsearchedpostid/?postname=${result}`
+       
+          fetch(url)
+          .then(response => response.json())
+          .then(data =>{
+            console.log(data)
+            window.open(`/post/postdetails/${data.data}`,name="_parent")
+           
+          })
+      }, 
+      autoSelect: true
+    })
+
+   
+
+  </script>
+
+
+
+{% endblock %}
