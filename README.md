@@ -1,2 +1,2 @@
 # SocialMedia
- Thi sis a SocialMedia Django Python Project for BharathBrands- TamilNadu
+ This is a SocialMedia Django Python Project for BharathBrands- TamilNadu
