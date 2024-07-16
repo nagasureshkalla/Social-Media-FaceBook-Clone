@@ -1,2 +1,2 @@
 # SocialMedia
- This is a SocialMedia Django Python Project for BharathBrands- TamilNadu
+ This is a Facebook clone developed using Django Python framework
